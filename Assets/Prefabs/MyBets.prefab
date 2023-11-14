@@ -543,6 +543,7 @@ MonoBehaviour:
   MoneyGot: {fileID: 2402788214915791808}
   Multiplay: {fileID: 1446051551233557380}
   multibg: {fileID: 6522940770584477795}
+  money: {fileID: 8875866949271783792}
 --- !u!1 &7985884772147587351
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ using System;
 public class valuebuttonandinputfield : MonoBehaviour
 {
     [SerializeField] public TMP_InputField inputamount;
-    [SerializeField] GameObject betIn;
+    [SerializeField] public GameObject betIn;
     [SerializeField] public GameObject cashOut;
     [SerializeField] public GameObject cancelWaiting;
     [SerializeField] public TMP_Text betinAmount;
@@ -47,26 +47,6 @@ public class valuebuttonandinputfield : MonoBehaviour
         if (float.Parse(inputamount.text)  < 0f)
         {
             inputamount.text = "0";
-        }
-        if (!start)
-        {
-            betIn.SetActive(true);
-        }
-        if (Multiply.betonoff && start && !checkbeintime)
-        {
-            cashOut.SetActive(true);
-            betIn.SetActive(false);
-            cancelWaiting.SetActive(false);
-        }
-        else if(Multiply.betonoff && start && checkbeintime)
-        {
-            cancelWaiting.SetActive(true);
-            betIn.SetActive(false);
-        }
-        if(!Multiply.betonoff && start)
-        {
-            cancelWaiting.SetActive(true);
-            betIn.SetActive(false);
         }
     }
 
@@ -155,10 +135,16 @@ public class valuebuttonandinputfield : MonoBehaviour
         }
         if (Multiply.betonoff)
         {
+            betIn.SetActive(false);
+            cashOut.SetActive(false);
+            cancelWaiting.SetActive(true);
             checkbeintime = true;
         }
         else
         {
+            betIn.SetActive(false);
+            cashOut.SetActive(true);
+            cancelWaiting.SetActive(false);
             checkbeintime = false;
         }
     }
@@ -176,6 +162,9 @@ public class valuebuttonandinputfield : MonoBehaviour
         cashOut.SetActive(false);
         pressed = false;
         amount = 0;
+        betIn.SetActive(true);
+        cashOut.SetActive(false);
+        cancelWaiting.SetActive(false);
         decoyloose = 0;
         AutoPlayOption.canloose = false;
     }
@@ -183,25 +172,20 @@ public class valuebuttonandinputfield : MonoBehaviour
 
     public void Cancel()
     {
-        if (!cancelbet)
-        {
-            AutoPlayOption.canloose = true;
-            alreadyclicked = 0;
-            pressed = false;
-            start = false;
-            Multiply.amount += amount;
-            cancelbet = true;
-            Invoke("cancelfalse", 2f);
-            cancelWaiting.SetActive(false);
-            amount = 0;
-            decoyloose = 0;
-            AutoPlayOption.canloose = false;
-        }
-    }
-
-    void cancelfalse()
-    {
-        cancelbet = false;
+        betIn.SetActive(true);
+        cashOut.SetActive(false);
+        cancelWaiting.SetActive(false);
+        AutoPlayOption.canloose = true;
+        alreadyclicked = 0;
+        pressed = false;
+        start = false;
+        Multiply.amount += amount;
+        cancelbet = true;
+        Invoke("cancelfalse", 2f);
+        cancelWaiting.SetActive(false);
+        amount = 0;
+        decoyloose = 0;
+        AutoPlayOption.canloose = false;
     }
 
     public void loose()
@@ -211,6 +195,9 @@ public class valuebuttonandinputfield : MonoBehaviour
         {
             FindAnyObjectByType<BetSection>().makemybets(0,0);
         }
+        betIn.SetActive(true);
+        cashOut.SetActive(false);
+        cancelWaiting.SetActive(false);
         amount = 0;
         decoyloose = 0;
         cashOut.SetActive(false);

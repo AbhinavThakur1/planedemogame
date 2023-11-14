@@ -10,6 +10,7 @@ public class mybets : MonoBehaviour
     [SerializeField] TMP_Text MoneyGot;
     [SerializeField] TMP_Text Multiplay;
     [SerializeField] GameObject multibg;
+    [SerializeField] TMP_Text money;
 
     void Start()
     {
@@ -19,7 +20,8 @@ public class mybets : MonoBehaviour
     public void Moneygotplus(float multiplay,float amount)
     {
         multibg.SetActive(true);
+        money.text = Math.Round(amount,2).ToString();
         Multiplay.text = Math.Round(multiplay, 2).ToString() + "x";
-        MoneyGot.text = (100 + (int)(amount * multiplay)).ToString();
+        MoneyGot.text = (Math.Round(amount * multiplay,2)).ToString();
     }
 }

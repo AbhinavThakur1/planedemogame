@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class Multiply : MonoBehaviour
 {
+    [SerializeField] GameObject mutliplaybarobject;
+    [SerializeField] GameObject secondbarobject;
+    [SerializeField] Transform mutliplaybarlocation;
+    [SerializeField] Transform secondbarlocation;
+    public float mutliplyvalueobj = 1.80f;
+    public int seconds = 5;
     public static float amount = 30000;
     public static float multiply=0;
     [SerializeField] TMP_Text amounttext;
@@ -25,7 +31,10 @@ public class Multiply : MonoBehaviour
     float change = 0f;
     float multitime = 0;
     float j = 0;
+    float k = 1.00f;
     public static bool beting;
+    float secondcount;
+    int thesecondcount;
 
     void Start()
     {
@@ -34,9 +43,26 @@ public class Multiply : MonoBehaviour
 
     void Update()
     {
+        secondcount += Time.deltaTime;
         amounttext.text = amount.ToString() + " USD";
+        if (multiply >= k)
+        {
+            k += 0.20f;
+            mutliplyvalueobj = float.Parse(Math.Round(mutliplyvalueobj + float.Parse("0.20"), 2).ToString());
+            GameObject i = Instantiate(mutliplaybarobject, mutliplaybarlocation);
+            i.GetComponent<multivalue>().set();
+        }
         if (next)
         {
+            change = 0;
+            foreach (GameObject i in GameObject.FindGameObjectsWithTag("Multi"))
+            {
+                Destroy(i);
+            }
+            foreach (GameObject i in GameObject.FindGameObjectsWithTag("Seconds"))
+            {
+                Destroy(i);
+            }
             j = 0;
             beting = true;
             plane.SetActive(true);
@@ -72,12 +98,26 @@ public class Multiply : MonoBehaviour
         }
         else if(!next && multiply <= value)
         {
+            thesecondcount = Mathf.FloorToInt(secondcount % 60);
+            if (thesecondcount == j)
+            {
+                j++;
+                seconds += 1;
+                GameObject i = Instantiate(secondbarobject, secondbarlocation);
+                i.GetComponent<Seconds>().set();
+            }
             betonoff = true;
             multiply += Mathf.Lerp(0f, value, multitime * Time.deltaTime);
             MultitextPlane.text = Math.Round(multiply, 2).ToString() + "x";
         }
         if (countit)
         {
+            if (change != value)
+            {
+                GameObject multiplymulti = Instantiate(multi, multiscroll);
+                multiplymulti.GetComponent<multiPreviews>().newtext(Math.Round(value, 2).ToString() + "x");
+                change = value;
+            }
             elapsedtime -= Time.deltaTime;
             int time = Mathf.FloorToInt(elapsedtime % 60);
             if (time >= 0 && time < 10)
@@ -97,10 +137,13 @@ public class Multiply : MonoBehaviour
                     }
                     else
                     {
+                        i.cashOut.SetActive(true);
+                        i.cancelWaiting.SetActive(false);
+                        i.betIn.SetActive(false);
                         i.checkbeintime = false;
                     }
                 }
-                plane.transform.position = new Vector3(10, -150, 0);
+                secondcount = 0;
                 countit = false;
                 elapsedtime = 0f;
                 setnextture();
@@ -108,6 +151,7 @@ public class Multiply : MonoBehaviour
         }
         if (multiply >= value)
         {
+            plane.transform.position = plane.GetComponent<PlaneMove>().startposition;
             AutoPlayOption.canloose = true;
             beting = false;
             foreach (valuebuttonandinputfield i in GameObject.FindObjectsByType<valuebuttonandinputfield>(FindObjectsSortMode.None))
@@ -129,12 +173,6 @@ public class Multiply : MonoBehaviour
 
     void setnextture()
     {
-        if (change != value)
-        {
-            GameObject multiplymulti = Instantiate(multi, multiscroll);
-            multiplymulti.GetComponent<multiPreviews>().newtext(Math.Round(value, 2).ToString() + "x");
-            change = value;
-        }
         FindAnyObjectByType<BetSection>().AllBetsUp();
         foreach (valuebuttonandinputfield i in GameObject.FindObjectsByType<valuebuttonandinputfield>(FindObjectsSortMode.None))
         {
